@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>RMC Time Tracker</title>
+<meta name="theme-color" content="#C4472C">
+<meta name="description" content="Time tracking for R Mackay Consulting — billable client work and personal time, synced to OneDrive.">
+
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="RMC Time">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&family=Mulish:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="app-header">
+  <h1>RMC Time Tracker</h1>
+</header>
+
+<main class="app-main">
+
+  <section id="tab-timer" class="tab-panel active">
+    <div class="panel-toolbar">
+      <button type="button" id="manual-entry-btn" class="btn btn-secondary btn-small">+ Add manual entry</button>
+      <button type="button" id="reorder-toggle" class="btn btn-secondary btn-small">Reorder</button>
+    </div>
+    <div id="zone-list" class="zone-list"></div>
+  </section>
+
+  <section id="tab-logs" class="tab-panel">
+    <div id="logs-filter-bar"></div>
+    <div id="logs-summary" class="logs-summary"></div>
+    <div id="logs-list" class="logs-list"></div>
+  </section>
+
+  <section id="tab-reports" class="tab-panel">
+    <div id="reports-filter-bar"></div>
+    <div class="report-group-toggle" id="reports-group-toggle">
+      <button type="button" class="active" data-group="zone">By zone</button>
+      <button type="button" data-group="contact">By contact</button>
+    </div>
+    <div id="reports-summary" class="report-totals"></div>
+    <div class="chart-card">
+      <h3>Breakdown</h3>
+      <div class="chart-wrap"><canvas id="reports-donut"></canvas></div>
+    </div>
+    <div class="chart-card" id="reports-stacked-wrap">
+      <h3>Daily breakdown</h3>
+      <div class="chart-wrap"><canvas id="reports-stacked"></canvas></div>
+    </div>
+  </section>
+
+  <section id="tab-settings" class="tab-panel">
+    <div class="settings-section">
+      <h2>Microsoft account</h2>
+      <p id="settings-auth-status" class="settings-auth-status">Checking sign-in status…</p>
+      <button type="button" id="settings-signin-btn" class="btn btn-primary hidden">Sign in with Microsoft</button>
+      <button type="button" id="settings-signout-btn" class="btn btn-secondary hidden">Sign out</button>
+    </div>
+
+    <div class="settings-section">
+      <h2>Zones</h2>
+      <div id="settings-zones-list" class="settings-list"></div>
+      <form id="zone-add-form" class="settings-add-form">
+        <input type="text" name="name" placeholder="New zone name" required>
+        <button type="submit" class="btn btn-primary btn-small">Add zone</button>
+      </form>
+    </div>
+
+    <div class="settings-section">
+      <h2>Contacts</h2>
+      <div id="settings-contacts-list" class="settings-list"></div>
+      <form id="contact-add-form" class="settings-add-form">
+        <input type="text" name="name" placeholder="New contact name" required>
+        <button type="submit" class="btn btn-primary btn-small">Add contact</button>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<nav class="tab-nav">
+  <button type="button" data-tab="timer" class="active">Timer</button>
+  <button type="button" data-tab="logs">Logs</button>
+  <button type="button" data-tab="reports">Reports</button>
+  <button type="button" data-tab="settings">Settings</button>
+</nav>
+
+<div id="modal-overlay" class="modal-overlay hidden">
+  <div id="modal-content" class="modal"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@azure/msal-browser@3/lib/msal-browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

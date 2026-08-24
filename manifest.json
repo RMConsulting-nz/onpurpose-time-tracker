@@ -1,0 +1,16 @@
+{
+  "name": "RMC Time Tracker",
+  "short_name": "RMC Time",
+  "description": "Time tracking for R Mackay Consulting — billable client work and personal time, synced to OneDrive.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#FBF7F1",
+  "theme_color": "#C4472C",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
