@@ -1,7 +1,7 @@
 // App-shell caching only: static assets are cached so the app opens (and the
 // Timer tab works from localStorage) offline. Microsoft Graph / MSAL requests
 // always go to the network untouched.
-const CACHE_NAME = 'rmc-time-tracker-v1';
+const CACHE_NAME = 'rmc-time-tracker-v2';
 const APP_SHELL = [
   './',
   './index.html',
@@ -47,18 +47,18 @@ self.addEventListener('fetch', (event) => {
     return; // let cross-origin (Graph, MSAL, CDN) and non-GET requests pass through untouched
   }
 
+  // Network-first: always serve the latest deployed file when online, so a
+  // fresh push shows up on next load without the user needing to clear
+  // anything. Cache is only a fallback for when there's no network at all.
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const network = fetch(event.request)
-        .then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-          }
-          return response;
-        })
-        .catch(() => cached);
-      return cached || network;
-    })
+    fetch(event.request)
+      .then((response) => {
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
