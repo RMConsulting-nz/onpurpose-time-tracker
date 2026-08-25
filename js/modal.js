@@ -33,6 +33,7 @@ function contactOptions(selectedId) {
         (c) => `<option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>${escapeHtml(c.name)}${c.archived ? ' (archived)' : ''}</option>`
       )
     )
+    .concat(['<option value="__new__">+ Add new contact…</option>'])
     .join('');
   return opts;
 }
@@ -121,6 +122,27 @@ function render(mode, opts) {
   overlay.classList.remove('hidden');
 
   const form = document.getElementById('entry-form');
+
+  const contactSelect = form.querySelector('select[name="contactId"]');
+  let lastContactValue = contactSelect.value;
+  contactSelect.addEventListener('change', () => {
+    if (contactSelect.value !== '__new__') {
+      lastContactValue = contactSelect.value;
+      return;
+    }
+    const name = (prompt('New contact name:') || '').trim();
+    if (!name) {
+      contactSelect.value = lastContactValue;
+      return;
+    }
+    const contact = state.addContact({ name });
+    const option = document.createElement('option');
+    option.value = contact.id;
+    option.textContent = contact.name;
+    contactSelect.insertBefore(option, contactSelect.querySelector('option[value="__new__"]'));
+    contactSelect.value = contact.id;
+    lastContactValue = contact.id;
+  });
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const fd = new FormData(form);
