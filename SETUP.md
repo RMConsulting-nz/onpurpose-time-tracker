@@ -57,3 +57,26 @@ Once both are done, open the site on your iPhone (Safari → Share → **Add to 
 Screen**, for an app-like icon) and on your computer, sign in with Microsoft, and
 you're set — the first sign-in creates the data file in your OneDrive app folder,
 pre-seeded with three zones and two contacts.
+
+## Known limitation: personal/family Microsoft accounts
+
+This app only reliably works with **work/school (Microsoft 365 organization)
+accounts**. Personal and Family Microsoft accounts fail to sync with a
+`serviceReadOnly` / "Database Is Read Only" error from Microsoft Graph — this
+was confirmed across two separate personal accounts, so it's not specific to
+any one account.
+
+The cause: OneDrive for work/school accounts runs on SharePoint's
+infrastructure, while OneDrive Personal/Family runs on an older, separate
+consumer backend. The feature this app relies on to create its own sandboxed
+data folder (`Files.ReadWrite.AppFolder`'s automatic "AppFolder" creation) is
+known to be considerably less reliable on that consumer backend. Manually
+creating folders/files in the regular OneDrive web app works fine on personal
+accounts — it's specifically Graph's automatic AppFolder creation that fails.
+
+A fix is possible but requires broadening the requested permission from
+`Files.ReadWrite.AppFolder` (sandboxed to this app's own folder) to
+`Files.ReadWrite` (full access to the OneDrive), and having the app manage a
+plain, ordinary folder itself instead of relying on the AppFolder trick. That
+trade-off (broader access) hasn't been made — for now, use a work/school
+account.
