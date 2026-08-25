@@ -99,16 +99,39 @@ function restartTicker() {
   }, 1000);
 }
 
+// Reorders by translating the dragged row (and shifting siblings out of its way)
+// with CSS transforms, and only touches the DOM/state once on release. Moving a
+// captured element's ancestor via insertBefore mid-drag drops pointer capture in
+// Chromium, which is what silently killed dragging after the first swap — so the
+// actual DOM order (and the zones' persisted order) changes only at drag end.
 function setupDragReorder() {
-  let draggingRow = null;
+  const rows = Array.from(listEl.querySelectorAll('.zone-row.reorder'));
 
-  listEl.querySelectorAll('.zone-row.reorder').forEach((row) => {
+  rows.forEach((row, index) => {
     const handle = row.querySelector('.drag-handle');
     if (!handle) return;
 
+    let dragging = false;
+    let startY = 0;
+    let rowStep = row.getBoundingClientRect().height + 12; // row height + 0.75rem gap
+    let targetIndex = index;
+
+    const clearTransforms = () => {
+      rows.forEach((r) => {
+        r.style.transform = '';
+        r.classList.remove('dragging');
+        r.style.zIndex = '';
+      });
+    };
+
     handle.addEventListener('pointerdown', (e) => {
-      draggingRow = row;
+      e.preventDefault();
+      dragging = true;
+      startY = e.clientY;
+      targetIndex = index;
+      rowStep = row.getBoundingClientRect().height + 12;
       row.classList.add('dragging');
+      row.style.zIndex = '10';
       try {
         handle.setPointerCapture(e.pointerId);
       } catch (err) {
@@ -117,31 +140,33 @@ function setupDragReorder() {
     });
 
     handle.addEventListener('pointermove', (e) => {
-      if (draggingRow !== row) return;
-      const rows = Array.from(listEl.querySelectorAll('.zone-row.reorder'));
-      const y = e.clientY;
-      for (const other of rows) {
-        if (other === row) continue;
-        const rect = other.getBoundingClientRect();
-        const mid = rect.top + rect.height / 2;
-        const rowFollowsOther = !!(other.compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING);
-        const rowPrecedesOther = !!(other.compareDocumentPosition(row) & Node.DOCUMENT_POSITION_PRECEDING);
-        if (y < mid && rowFollowsOther) {
-          listEl.insertBefore(row, other);
-          break;
-        } else if (y > mid && rowPrecedesOther) {
-          listEl.insertBefore(row, other.nextSibling);
-          break;
-        }
-      }
+      if (!dragging) return;
+      e.preventDefault();
+      const deltaY = e.clientY - startY;
+      row.style.transform = `translateY(${deltaY}px)`;
+
+      const steps = Math.round(deltaY / rowStep);
+      targetIndex = Math.min(rows.length - 1, Math.max(0, index + steps));
+
+      rows.forEach((r, i) => {
+        if (r === row) return;
+        let shift = 0;
+        if (targetIndex > index && i > index && i <= targetIndex) shift = -1;
+        else if (targetIndex < index && i >= targetIndex && i < index) shift = 1;
+        r.style.transform = shift ? `translateY(${shift * rowStep}px)` : '';
+      });
     });
 
     const finish = () => {
-      if (draggingRow !== row) return;
-      row.classList.remove('dragging');
-      draggingRow = null;
-      const newOrder = Array.from(listEl.querySelectorAll('.zone-row.reorder')).map((r) => r.dataset.zoneId);
-      state.reorderZones(newOrder);
+      if (!dragging) return;
+      dragging = false;
+      clearTransforms();
+      if (targetIndex !== index) {
+        const newOrder = rows.map((r) => r.dataset.zoneId);
+        const [movedId] = newOrder.splice(index, 1);
+        newOrder.splice(targetIndex, 0, movedId);
+        state.reorderZones(newOrder);
+      }
     };
     handle.addEventListener('pointerup', finish);
     handle.addEventListener('pointercancel', finish);

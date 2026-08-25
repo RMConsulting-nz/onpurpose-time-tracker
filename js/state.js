@@ -223,8 +223,10 @@ export function getContact(id) {
   return data.contacts.find((c) => c.id === id);
 }
 export function addContact({ name }) {
-  data.contacts.push({ id: uuid(), name, archived: false });
+  const contact = { id: uuid(), name, archived: false };
+  data.contacts.push(contact);
   persist();
+  return contact;
 }
 export function updateContact(id, fields) {
   const contact = getContact(id);
