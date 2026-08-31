@@ -25,6 +25,7 @@ export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, on
           labels: {
             font: { family: 'Mulish' },
             color: '#241C16',
+            padding: 14,
             generateLabels: (c) =>
               c.data.labels.map((label, i) => ({
                 text: `${label} — ${formatDuration(c.data.datasets[0].data[i])}`,

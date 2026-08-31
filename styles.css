@@ -407,6 +407,7 @@ select { flex: 1; min-width: 8rem; }
   margin-bottom: 1rem;
 }
 .chart-wrap { position: relative; height: 260px; }
+.donut-wrap { height: 340px; }
 #reports-stacked-wrap {
   margin-top: 1.25rem;
   padding-top: 1.25rem;
