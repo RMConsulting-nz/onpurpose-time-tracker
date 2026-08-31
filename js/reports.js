@@ -1,7 +1,7 @@
 // Reports tab: same filters as Logs, totals, donut chart (by zone or contact),
 // and — for week/month — a stacked bar chart per day, stacked by zone or contact.
 import * as state from './state.js';
-import { renderFilterBar, filterEntries, durationHours, getRange, startOfDay } from './filters.js';
+import { renderFilterBar, filterEntries, durationHours, getRange, startOfDay, formatDuration } from './filters.js';
 import { renderDoughnut, renderStackedBar } from './charts.js';
 import { SWATCHES } from './colors.js';
 
@@ -21,8 +21,21 @@ const filterState = {
 };
 let groupBy = 'zone'; // 'zone' | 'contact'
 
+// Zones/contacts hidden via a legend click, keyed by group id (or '__none__').
+// Applies to both charts and the totals; cleared when the grouping axis changes.
+let hiddenGroupIds = new Set();
+let currentGroupIds = [];
+
 function fmtHours(h) {
-  return h.toFixed(2) + 'h';
+  return formatDuration(h);
+}
+
+function toggleGroupVisibility(index) {
+  const id = currentGroupIds[index];
+  if (id == null) return;
+  if (hiddenGroupIds.has(id)) hiddenGroupIds.delete(id);
+  else hiddenGroupIds.add(id);
+  render();
 }
 
 function contactColor(contactId) {
@@ -64,8 +77,9 @@ function render() {
     billable: filterState.billable,
   });
 
-  const totalHours = filtered.reduce((sum, e) => sum + durationHours(e), 0);
-  const billableHours = filtered.filter((e) => e.billable).reduce((sum, e) => sum + durationHours(e), 0);
+  const visible = filtered.filter((e) => !hiddenGroupIds.has(groupKey(e)));
+  const totalHours = visible.reduce((sum, e) => sum + durationHours(e), 0);
+  const billableHours = visible.filter((e) => e.billable).reduce((sum, e) => sum + durationHours(e), 0);
   const nonBillableHours = totalHours - billableHours;
   summaryEl.innerHTML = `
     <div class="report-total"><span class="report-total-value">${fmtHours(totalHours)}</span><span class="report-total-label">Total</span></div>
@@ -80,6 +94,11 @@ function render() {
     totalsByGroup.set(key, (totalsByGroup.get(key) || 0) + durationHours(e));
   }
   const groupIds = Array.from(totalsByGroup.keys());
+  currentGroupIds = groupIds;
+  const hiddenIndices = groupIds.reduce((acc, id, i) => {
+    if (hiddenGroupIds.has(id)) acc.push(i);
+    return acc;
+  }, []);
   if (groupIds.length === 0) {
     donutCanvas.parentElement.classList.add('hidden');
   } else {
@@ -87,7 +106,7 @@ function render() {
     const labels = groupIds.map((id) => groupLabel(id === '__none__' ? null : id));
     const values = groupIds.map((id) => totalsByGroup.get(id));
     const colors = groupIds.map((id) => groupColor(id === '__none__' ? null : id));
-    renderDoughnut(donutCanvas, labels, values, colors);
+    renderDoughnut(donutCanvas, labels, values, colors, hiddenIndices, toggleGroupVisibility);
   }
 
   // Stacked bar: per-day totals, stacked by group (only for week/month)
@@ -116,7 +135,7 @@ function render() {
       data: perGroupPerDay.get(id),
       color: groupColor(id === '__none__' ? null : id),
     }));
-    renderStackedBar(stackedCanvas, dayLabels, datasets);
+    renderStackedBar(stackedCanvas, dayLabels, datasets, hiddenIndices, toggleGroupVisibility);
   }
 }
 
@@ -124,6 +143,7 @@ export function init() {
   groupToggleEl.querySelectorAll('button').forEach((btn) => {
     btn.addEventListener('click', () => {
       groupBy = btn.dataset.group;
+      hiddenGroupIds = new Set();
       groupToggleEl.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b === btn));
       render();
     });

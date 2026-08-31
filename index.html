@@ -23,7 +23,8 @@
 <body>
 
 <header class="app-header">
-  <h1>RMC Time Tracker</h1>
+  <h1>Time Tracker</h1>
+  <p class="app-subtitle">On Purpose</p>
 </header>
 
 <main class="app-main">
@@ -37,6 +38,9 @@
   </section>
 
   <section id="tab-logs" class="tab-panel">
+    <div class="panel-toolbar">
+      <button type="button" id="logs-manual-entry-btn" class="btn btn-secondary btn-small">+ Add manual entry</button>
+    </div>
     <div id="logs-filter-bar"></div>
     <div id="logs-summary" class="logs-summary"></div>
     <div id="logs-list" class="logs-list"></div>

@@ -1,7 +1,7 @@
 // App-shell caching only: static assets are cached so the app opens (and the
 // Timer tab works from localStorage) offline. Microsoft Graph / MSAL requests
 // always go to the network untouched.
-const CACHE_NAME = 'rmc-time-tracker-v2';
+const CACHE_NAME = 'rmc-time-tracker-v3';
 const APP_SHELL = [
   './',
   './index.html',
@@ -19,6 +19,7 @@ const APP_SHELL = [
   './js/filters.js',
   './js/charts.js',
   './js/colors.js',
+  './js/pull-to-refresh.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
