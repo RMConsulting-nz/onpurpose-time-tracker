@@ -21,7 +21,7 @@ export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, on
       plugins: {
         legend: {
           display: showLegend,
-          position: 'bottom',
+          position: 'top',
           labels: {
             font: { family: 'Mulish' },
             color: '#241C16',
@@ -79,7 +79,7 @@ export function renderStackedBar(canvas, dayLabels, datasets, hiddenIndices, onT
       },
       plugins: {
         legend: {
-          position: 'bottom',
+          position: 'top',
           labels: {
             font: { family: 'Mulish' },
             color: '#241C16',
