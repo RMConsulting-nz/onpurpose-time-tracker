@@ -113,7 +113,7 @@ function render(mode, opts) {
         ${mode === 'edit' ? '<button type="button" class="btn btn-danger" data-action="delete">Delete</button>' : ''}
         <div class="modal-actions-right">
           <button type="button" class="btn btn-secondary" data-action="cancel">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="submit" class="btn btn-primary">${mode === 'start' ? 'Start' : 'Save'}</button>
         </div>
       </div>
     </form>
@@ -143,7 +143,7 @@ function render(mode, opts) {
     contactSelect.value = contact.id;
     lastContactValue = contact.id;
   });
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const fd = new FormData(form);
     const fields = {
@@ -161,7 +161,15 @@ function render(mode, opts) {
     }
 
     if (mode === 'start') {
-      state.startTimer(zoneId, fields);
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Checking…';
+      const started = await state.startTimerChecked(zoneId, fields);
+      if (!started) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Start';
+        return;
+      }
     } else if (mode === 'edit-running') {
       state.updateRunningDraft(fields);
     } else if (mode === 'manual') {

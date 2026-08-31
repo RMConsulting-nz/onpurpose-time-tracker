@@ -81,6 +81,17 @@ export function durationHours(entry) {
   return Math.max(0, ms / 3600000);
 }
 
+// Formats a decimal hours value as "3h 20m" / "45m" / "2h" — human-readable
+// rather than a raw decimal like "3.33".
+export function formatDuration(hours) {
+  const totalMinutes = Math.round(hours * 60);
+  const h = Math.floor(totalMinutes / 60);
+  const m = totalMinutes % 60;
+  if (h === 0) return `${m}m`;
+  if (m === 0) return `${h}h`;
+  return `${h}h ${m}m`;
+}
+
 function escapeHtml(str) {
   return String(str || '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
@@ -99,9 +110,11 @@ export function renderFilterBar(container, filterState, onChange) {
           <option value="week" ${filterState.period === 'week' ? 'selected' : ''}>Week</option>
           <option value="month" ${filterState.period === 'month' ? 'selected' : ''}>Month</option>
         </select>
-        <button type="button" class="icon-btn" data-action="prev" aria-label="Previous period">&#8249;</button>
-        <span class="filter-range-label">${formatRangeLabel(filterState.period, filterState.anchor)}</span>
-        <button type="button" class="icon-btn" data-action="next" aria-label="Next period">&#8250;</button>
+        <div class="filter-nav">
+          <button type="button" class="icon-btn" data-action="prev" aria-label="Previous period">&#8249;</button>
+          <span class="filter-range-label">${formatRangeLabel(filterState.period, filterState.anchor)}</span>
+          <button type="button" class="icon-btn" data-action="next" aria-label="Next period">&#8250;</button>
+        </div>
         <button type="button" class="btn btn-link" data-action="today">Today</button>
       </div>
       <div class="filter-row">

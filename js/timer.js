@@ -11,8 +11,9 @@ const manualBtn = document.getElementById('manual-entry-btn');
 let reorderMode = false;
 let tickHandle = null;
 
-function formatElapsed(startIso) {
-  const ms = Date.now() - new Date(startIso).getTime();
+function formatElapsed(startIso, endIso) {
+  const end = endIso ? new Date(endIso).getTime() : Date.now();
+  const ms = end - new Date(startIso).getTime();
   const totalSeconds = Math.max(0, Math.floor(ms / 1000));
   const h = Math.floor(totalSeconds / 3600);
   const m = Math.floor((totalSeconds % 3600) / 60);
@@ -39,6 +40,20 @@ function zoneRowHtml(zone, running) {
   }
 
   if (isRunning) {
+    const isPaused = !!running.pausedAt;
+    if (isPaused) {
+      return `
+        <div class="zone-row running" data-zone-id="${zone.id}">
+          <div class="zone-btn zone-btn-running paused" style="${style}">
+            <span class="zone-name">${escapeHtml(zone.name)}</span>
+            <span class="zone-elapsed" data-elapsed="${zone.id}">${formatElapsed(running.start, running.pausedAt)}</span>
+            <span class="zone-stop-hint">Paused</span>
+          </div>
+          <button type="button" class="icon-btn zone-edit" data-action="play" data-zone-id="${zone.id}" aria-label="Log this and start a new timer">&#9654;</button>
+          <button type="button" class="icon-btn zone-edit" data-action="stop" data-zone-id="${zone.id}" aria-label="Stop and save">&#9632;</button>
+          <button type="button" class="icon-btn zone-edit" data-action="edit-running" aria-label="Edit running entry">&#9998;</button>
+        </div>`;
+    }
     return `
       <div class="zone-row running" data-zone-id="${zone.id}">
         <button type="button" class="zone-btn zone-btn-running" style="${style}" data-action="stop" data-zone-id="${zone.id}">
@@ -46,6 +61,7 @@ function zoneRowHtml(zone, running) {
           <span class="zone-elapsed" data-elapsed="${zone.id}">${formatElapsed(running.start)}</span>
           <span class="zone-stop-hint">Tap to stop</span>
         </button>
+        <button type="button" class="icon-btn zone-edit" data-action="pause" data-zone-id="${zone.id}" aria-label="Pause">&#9208;</button>
         <button type="button" class="icon-btn zone-edit" data-action="edit-running" aria-label="Edit running entry">&#9998;</button>
       </div>`;
   }
@@ -77,7 +93,16 @@ function render() {
       btn.addEventListener('click', () => modal.openStart(btn.dataset.zoneId));
     });
     listEl.querySelectorAll('[data-action="stop"]').forEach((btn) => {
-      btn.addEventListener('click', () => state.stopTimer());
+      btn.addEventListener('click', () => {
+        const entry = state.stopTimer();
+        if (entry) modal.openEdit(entry.id);
+      });
+    });
+    listEl.querySelectorAll('[data-action="pause"]').forEach((btn) => {
+      btn.addEventListener('click', () => state.pauseTimer());
+    });
+    listEl.querySelectorAll('[data-action="play"]').forEach((btn) => {
+      btn.addEventListener('click', () => state.logAndRestart());
     });
     listEl.querySelectorAll('[data-action="edit-running"]').forEach((btn) => {
       btn.addEventListener('click', () => modal.openEditRunning());
@@ -90,10 +115,10 @@ function render() {
 function restartTicker() {
   if (tickHandle) clearInterval(tickHandle);
   const running = state.getRunningTimer();
-  if (!running || reorderMode) return;
+  if (!running || reorderMode || running.pausedAt) return;
   tickHandle = setInterval(() => {
     const r = state.getRunningTimer();
-    if (!r) return;
+    if (!r || r.pausedAt) return;
     const el = listEl.querySelector(`[data-elapsed="${r.zoneId}"]`);
     if (el) el.textContent = formatElapsed(r.start);
   }, 1000);
@@ -106,6 +131,8 @@ function restartTicker() {
 // actual DOM order (and the zones' persisted order) changes only at drag end.
 function setupDragReorder() {
   const rows = Array.from(listEl.querySelectorAll('.zone-row.reorder'));
+  const EDGE_ZONE = 70; // px from top/bottom of the viewport that triggers auto-scroll
+  const SCROLL_SPEED = 14; // px per tick
 
   rows.forEach((row, index) => {
     const handle = row.querySelector('.drag-handle');
@@ -113,8 +140,11 @@ function setupDragReorder() {
 
     let dragging = false;
     let startY = 0;
+    let startScrollY = 0;
+    let lastClientY = 0;
     let rowStep = row.getBoundingClientRect().height + 12; // row height + 0.75rem gap
     let targetIndex = index;
+    let autoScrollHandle = null;
 
     const clearTransforms = () => {
       rows.forEach((r) => {
@@ -124,25 +154,12 @@ function setupDragReorder() {
       });
     };
 
-    handle.addEventListener('pointerdown', (e) => {
-      e.preventDefault();
-      dragging = true;
-      startY = e.clientY;
-      targetIndex = index;
-      rowStep = row.getBoundingClientRect().height + 12;
-      row.classList.add('dragging');
-      row.style.zIndex = '10';
-      try {
-        handle.setPointerCapture(e.pointerId);
-      } catch (err) {
-        /* ignore */
-      }
-    });
-
-    handle.addEventListener('pointermove', (e) => {
-      if (!dragging) return;
-      e.preventDefault();
-      const deltaY = e.clientY - startY;
+    // Recomputes the drag transform from the latest pointer position, adjusted
+    // for however much the page has scrolled since the drag started — needed
+    // because auto-scrolling moves the row under a stationary finger without
+    // firing new pointermove events on its own.
+    const updateDrag = () => {
+      const deltaY = lastClientY - startY + (window.scrollY - startScrollY);
       row.style.transform = `translateY(${deltaY}px)`;
 
       const steps = Math.round(deltaY / rowStep);
@@ -155,11 +172,57 @@ function setupDragReorder() {
         else if (targetIndex < index && i >= targetIndex && i < index) shift = 1;
         r.style.transform = shift ? `translateY(${shift * rowStep}px)` : '';
       });
+    };
+
+    const startAutoScroll = () => {
+      if (autoScrollHandle) return;
+      autoScrollHandle = setInterval(() => {
+        if (lastClientY < EDGE_ZONE) {
+          window.scrollBy(0, -SCROLL_SPEED);
+        } else if (lastClientY > window.innerHeight - EDGE_ZONE) {
+          window.scrollBy(0, SCROLL_SPEED);
+        } else {
+          return;
+        }
+        updateDrag();
+      }, 16);
+    };
+    const stopAutoScroll = () => {
+      if (autoScrollHandle) {
+        clearInterval(autoScrollHandle);
+        autoScrollHandle = null;
+      }
+    };
+
+    handle.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      dragging = true;
+      startY = e.clientY;
+      lastClientY = e.clientY;
+      startScrollY = window.scrollY;
+      targetIndex = index;
+      rowStep = row.getBoundingClientRect().height + 12;
+      row.classList.add('dragging');
+      row.style.zIndex = '10';
+      try {
+        handle.setPointerCapture(e.pointerId);
+      } catch (err) {
+        /* ignore */
+      }
+      startAutoScroll();
+    });
+
+    handle.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      e.preventDefault();
+      lastClientY = e.clientY;
+      updateDrag();
     });
 
     const finish = () => {
       if (!dragging) return;
       dragging = false;
+      stopAutoScroll();
       clearTransforms();
       if (targetIndex !== index) {
         const newOrder = rows.map((r) => r.dataset.zoneId);

@@ -22,6 +22,7 @@ export function seedData() {
       { id: 'contact-hwc', name: 'HWC', archived: false },
     ],
     entries: [],
+    runningTimer: null,
     _meta: { createdAt: now },
   };
 }

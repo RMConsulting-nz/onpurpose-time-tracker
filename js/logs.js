@@ -1,11 +1,12 @@
 // Logs tab: filterable, editable, deletable list of entries.
 import * as state from './state.js';
 import * as modal from './modal.js';
-import { renderFilterBar, filterEntries, durationHours, getRange } from './filters.js';
+import { renderFilterBar, filterEntries, durationHours, getRange, formatDuration } from './filters.js';
 
 const filterBarEl = document.getElementById('logs-filter-bar');
 const listEl = document.getElementById('logs-list');
 const summaryEl = document.getElementById('logs-summary');
+const manualBtn = document.getElementById('logs-manual-entry-btn');
 
 const filterState = {
   period: 'week',
@@ -25,7 +26,7 @@ function fmtTime(iso) {
 }
 
 function fmtHours(h) {
-  return h.toFixed(2) + 'h';
+  return formatDuration(h);
 }
 
 function render() {
@@ -68,22 +69,52 @@ function render() {
             </div>
             ${e.notes ? `<div class="log-notes">${escapeHtml(e.notes)}</div>` : ''}
           </div>
-          <div class="log-actions">
-            <button type="button" class="icon-btn" data-action="edit" aria-label="Edit entry">&#9998;</button>
-            <button type="button" class="icon-btn" data-action="delete" aria-label="Delete entry">&#128465;</button>
+          <div class="log-menu">
+            <button type="button" class="icon-btn log-menu-btn" data-action="menu" aria-label="More actions">&#8942;</button>
+            <div class="log-menu-dropdown hidden">
+              <button type="button" data-action="edit">Edit</button>
+              <button type="button" data-action="start-new">Start new</button>
+              <button type="button" data-action="delete">Delete</button>
+            </div>
           </div>
         </div>`;
     })
     .join('');
 
+  listEl.querySelectorAll('.log-menu-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const dropdown = btn.nextElementSibling;
+      const wasOpen = !dropdown.classList.contains('hidden');
+      closeAllMenus();
+      if (!wasOpen) dropdown.classList.remove('hidden');
+    });
+  });
   listEl.querySelectorAll('[data-action="edit"]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const id = e.target.closest('.log-row').dataset.entryId;
+      closeAllMenus();
       modal.openEdit(id);
+    });
+  });
+  listEl.querySelectorAll('[data-action="start-new"]').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      closeAllMenus();
+      const id = e.target.closest('.log-row').dataset.entryId;
+      const entry = state.getEntry(id);
+      if (!entry) return;
+      const started = await state.startTimerChecked(entry.zoneId, {
+        contactId: entry.contactId,
+        billable: entry.billable,
+        description: entry.description,
+        notes: entry.notes,
+      });
+      if (started) window.dispatchEvent(new CustomEvent('switch-tab', { detail: 'timer' }));
     });
   });
   listEl.querySelectorAll('[data-action="delete"]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
+      closeAllMenus();
       const id = e.target.closest('.log-row').dataset.entryId;
       if (confirm('Delete this entry? This cannot be undone.')) {
         state.deleteEntry(id);
@@ -92,7 +123,14 @@ function render() {
   });
 }
 
+function closeAllMenus() {
+  listEl.querySelectorAll('.log-menu-dropdown').forEach((el) => el.classList.add('hidden'));
+}
+
+document.addEventListener('click', closeAllMenus);
+
 export function init() {
+  manualBtn.addEventListener('click', () => modal.openManual());
   state.subscribe(render);
   render();
 }

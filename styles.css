@@ -60,6 +60,15 @@ h2, h3 { font-weight: 600; color: var(--teal); }
   font-size: 1.3rem;
   margin: 0;
 }
+.app-subtitle {
+  margin: 0.1rem 0 0;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--subheading);
+}
 
 /* Main + tabs */
 .app-main {
@@ -185,6 +194,11 @@ h2, h3 { font-weight: 600; color: var(--teal); }
 .zone-btn-running {
   box-shadow: 0 0 0 3px rgba(36, 28, 22, 0.15) inset;
 }
+.zone-btn-running.paused {
+  cursor: default;
+  border: 2px dashed rgba(36, 28, 22, 0.35);
+  opacity: 0.85;
+}
 .zone-elapsed {
   font-variant-numeric: tabular-nums;
   font-size: 1.4rem;
@@ -253,10 +267,16 @@ h2, h3 { font-weight: 600; color: var(--teal); }
 }
 .filter-row:last-child { margin-bottom: 0; }
 .filter-timeframe { justify-content: center; }
+.filter-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: nowrap;
+}
 .filter-range-label {
   font-family: var(--font-heading);
   font-weight: 600;
-  min-width: 9rem;
+  min-width: 8rem;
   text-align: center;
   color: var(--subheading);
 }
@@ -268,6 +288,8 @@ select, input[type="text"], input[type="datetime-local"], textarea {
   border-radius: 8px;
   background: var(--surface);
   color: var(--text);
+  width: 100%;
+  min-width: 0;
 }
 select { flex: 1; min-width: 8rem; }
 
@@ -306,7 +328,34 @@ select { flex: 1; min-width: 8rem; }
 .log-meta { color: var(--caption); font-size: 0.8rem; margin-top: 0.2rem; }
 .log-notes { color: var(--subheading); font-size: 0.85rem; margin-top: 0.3rem; font-style: italic; }
 .muted { color: var(--caption); }
-.log-actions { display: flex; flex-direction: column; justify-content: center; gap: 0.1rem; }
+.log-menu { position: relative; display: flex; align-items: flex-start; }
+.log-menu-btn { font-size: 1.4rem; }
+.log-menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(36, 28, 22, 0.18);
+  z-index: 30;
+  min-width: 8.5rem;
+  overflow: hidden;
+}
+.log-menu-dropdown button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.6rem 0.9rem;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.log-menu-dropdown button:hover { background: var(--bg); }
+.log-menu-dropdown button[data-action="delete"] { color: var(--terracotta); }
 
 /* Reports */
 .report-group-toggle {
@@ -434,8 +483,8 @@ select { flex: 1; min-width: 8rem; }
 .field { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.85rem; color: var(--subheading); font-family: var(--font-heading); font-weight: 600; }
 .field select, .field input, .field textarea { font-family: var(--font-body); font-weight: 400; }
 .field-checkbox { flex-direction: row; align-items: center; gap: 0.5rem; }
-.field-row { display: flex; gap: 0.75rem; }
-.field-row .field { flex: 1; }
+.field-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.field-row .field { flex: 1 1 140px; min-width: 0; }
 .modal-actions {
   display: flex;
   justify-content: space-between;
@@ -444,6 +493,24 @@ select { flex: 1; min-width: 8rem; }
   gap: 0.5rem;
 }
 .modal-actions-right { display: flex; gap: 0.5rem; margin-left: auto; }
+
+/* Pull-to-refresh (installed/standalone app only) */
+#pull-refresh-indicator {
+  position: fixed;
+  top: -2.2rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 0.6rem;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--teal);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  transform: translateY(0);
+  z-index: 60;
+}
 
 @media (prefers-color-scheme: dark) {
   /* Intentionally not implementing a dark theme: this is a personal utility app

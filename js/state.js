@@ -89,11 +89,16 @@ function mergeData(remote, local) {
     zones: mergeById(remote.zones || [], local.zones || [], false),
     contacts: mergeById(remote.contacts || [], local.contacts || [], false),
     entries: mergeById(remote.entries || [], local.entries || [], true),
+    // This device's own active timer always wins; otherwise keep whatever
+    // OneDrive last knew about (another device's running timer), purely so it
+    // can be detected as a conflict when this device tries to start one.
+    runningTimer: local.runningTimer || remote.runningTimer || null,
   };
 }
 
 export async function init() {
   loadFromLocalStorage();
+  data.runningTimer = runningTimer;
   emit();
   if (graph.isSignedIn()) {
     await syncFromRemote();
@@ -275,28 +280,83 @@ export function deleteEntry(id) {
 }
 
 // ---------- Running timer ----------
-// Starting a new zone's timer auto-stops/logs whichever zone is currently running.
+// Starting a new zone's timer auto-stops/logs whichever zone is currently running
+// *on this device*. The running timer is mirrored into `data.runningTimer` and
+// synced to OneDrive (via the normal persist() path) so other devices can detect
+// one already running elsewhere.
 export function startTimer(zoneId, draft = {}) {
   if (runningTimer) {
     stopTimer();
   }
   runningTimer = Object.assign(
-    { zoneId, contactId: null, billable: false, description: '', notes: '', start: new Date().toISOString() },
+    { zoneId, contactId: null, billable: false, description: '', notes: '', start: new Date().toISOString(), pausedAt: null },
     draft
   );
-  mirrorToLocalStorage();
-  emit();
+  data.runningTimer = runningTimer;
+  persist();
 }
+
+// Checks OneDrive for a timer already running on another device before starting
+// a new one; if found, confirms with the user whether to stop it (logging it as
+// a completed entry with its own details) and proceed. Returns false if the
+// user declines, true otherwise (including when the check itself couldn't run,
+// e.g. offline — starting a timer should never be blocked by a failed check).
+export async function startTimerChecked(zoneId, draft = {}) {
+  if (!runningTimer && graph.isSignedIn()) {
+    try {
+      const remote = await graph.fetchRemote();
+      if (remote.data) {
+        const remoteRunning = remote.data.runningTimer;
+        data = mergeData(remote.data, data);
+        etag = remote.etag;
+        if (remoteRunning) {
+          const remoteZone = data.zones.find((z) => z.id === remoteRunning.zoneId);
+          const startTime = new Date(remoteRunning.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const proceed = confirm(
+            `A timer is already running elsewhere: ${remoteZone ? remoteZone.name : 'Unknown zone'}, started at ${startTime}.\n\nStop it and start this one?`
+          );
+          if (!proceed) return false;
+          addEntry({
+            zoneId: remoteRunning.zoneId,
+            contactId: remoteRunning.contactId,
+            billable: remoteRunning.billable,
+            description: remoteRunning.description,
+            notes: remoteRunning.notes,
+            start: remoteRunning.start,
+            end: new Date().toISOString(),
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Remote timer conflict check failed, starting without it', err);
+    }
+  }
+  startTimer(zoneId, draft);
+  return true;
+}
+
 export function updateRunningDraft(fields) {
   if (!runningTimer) return;
   Object.assign(runningTimer, fields);
-  mirrorToLocalStorage();
-  emit();
+  data.runningTimer = runningTimer;
+  persist();
 }
+
+// Freezes the running timer's elapsed time at this moment; Stop or "log and
+// restart" afterwards both use this moment as the boundary, so time spent
+// paused/interrupted is never logged either side of it.
+export function pauseTimer() {
+  if (!runningTimer || runningTimer.pausedAt) return;
+  runningTimer.pausedAt = new Date().toISOString();
+  data.runningTimer = runningTimer;
+  persist();
+}
+
 export function stopTimer(endOverride) {
   if (!runningTimer) return null;
   const finished = runningTimer;
   runningTimer = null;
+  data.runningTimer = null;
   const entry = addEntry({
     zoneId: finished.zoneId,
     contactId: finished.contactId,
@@ -304,12 +364,41 @@ export function stopTimer(endOverride) {
     description: finished.description,
     notes: finished.notes,
     start: finished.start,
-    end: endOverride || new Date().toISOString(),
+    end: endOverride || finished.pausedAt || new Date().toISOString(),
   });
   return entry;
 }
+
+// Logs the currently paused segment as a completed entry, then immediately
+// starts a fresh timer with the same draft details (contact/billable/
+// description/notes) so a short interruption doesn't need re-entering them.
+export function logAndRestart() {
+  if (!runningTimer) return null;
+  const draft = runningTimer;
+  const boundary = draft.pausedAt || new Date().toISOString();
+  runningTimer = {
+    zoneId: draft.zoneId,
+    contactId: draft.contactId,
+    billable: draft.billable,
+    description: draft.description,
+    notes: draft.notes,
+    start: new Date().toISOString(),
+    pausedAt: null,
+  };
+  data.runningTimer = runningTimer;
+  return addEntry({
+    zoneId: draft.zoneId,
+    contactId: draft.contactId,
+    billable: draft.billable,
+    description: draft.description,
+    notes: draft.notes,
+    start: draft.start,
+    end: boundary,
+  });
+}
+
 export function discardTimer() {
   runningTimer = null;
-  mirrorToLocalStorage();
-  emit();
+  data.runningTimer = null;
+  persist();
 }
