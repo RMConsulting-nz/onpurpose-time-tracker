@@ -99,11 +99,9 @@ function render() {
     if (hiddenGroupIds.has(id)) acc.push(i);
     return acc;
   }, []);
-  // The stacked bar only appears for week/month — when it's showing, its
-  // legend is the single shared control for both charts, so the donut hides
-  // its own (otherwise-redundant) legend to avoid two legends drifting out
-  // of sync visually. On Day view, where the bar isn't there, the donut
-  // shows its legend since it's the only control available.
+  // The donut is always first in the card, so it's the one that carries the
+  // single shared legend (positioned at its own top — i.e. above everything).
+  // The stacked bar, when present, never shows its own legend.
   const barVisible = filterState.period !== 'day';
 
   if (groupIds.length === 0) {
@@ -113,7 +111,7 @@ function render() {
     const labels = groupIds.map((id) => groupLabel(id === '__none__' ? null : id));
     const values = groupIds.map((id) => totalsByGroup.get(id));
     const colors = groupIds.map((id) => groupColor(id === '__none__' ? null : id));
-    renderDoughnut(donutCanvas, labels, values, colors, hiddenIndices, toggleGroupVisibility, !barVisible);
+    renderDoughnut(donutCanvas, labels, values, colors, hiddenIndices, toggleGroupVisibility, true);
   }
 
   // Stacked bar: per-day totals, stacked by group (only for week/month)
@@ -142,7 +140,7 @@ function render() {
       data: perGroupPerDay.get(id),
       color: groupColor(id === '__none__' ? null : id),
     }));
-    renderStackedBar(stackedCanvas, dayLabels, datasets, hiddenIndices, toggleGroupVisibility);
+    renderStackedBar(stackedCanvas, dayLabels, datasets, hiddenIndices, toggleGroupVisibility, false);
   }
 }
 

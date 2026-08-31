@@ -52,7 +52,7 @@ export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, on
   return chart;
 }
 
-export function renderStackedBar(canvas, dayLabels, datasets, hiddenIndices, onToggle) {
+export function renderStackedBar(canvas, dayLabels, datasets, hiddenIndices, onToggle, showLegend = true) {
   const prev = instances.get(canvas);
   if (prev) prev.destroy();
   const chart = new Chart(canvas, {
@@ -79,6 +79,7 @@ export function renderStackedBar(canvas, dayLabels, datasets, hiddenIndices, onT
       },
       plugins: {
         legend: {
+          display: showLegend,
           position: 'top',
           labels: {
             font: { family: 'Mulish' },
