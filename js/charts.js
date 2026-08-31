@@ -42,6 +42,7 @@ export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, on
     },
   });
   hiddenIndices.forEach((i) => chart.hide(0, i));
+  chart.update();
   instances.set(canvas, chart);
   return chart;
 }
