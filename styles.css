@@ -407,6 +407,18 @@ select { flex: 1; min-width: 8rem; }
   margin-bottom: 1rem;
 }
 .chart-wrap { position: relative; height: 260px; }
+#reports-stacked-wrap {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+#reports-stacked-wrap h4 {
+  margin: 0 0 0.6rem;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--teal);
+}
 
 /* Settings */
 .settings-section {

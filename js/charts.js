@@ -6,7 +6,7 @@ import { formatDuration } from './filters.js';
 
 const instances = new Map();
 
-export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, onToggle) {
+export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, onToggle, showLegend = true) {
   const prev = instances.get(canvas);
   if (prev) prev.destroy();
   const chart = new Chart(canvas, {
@@ -20,7 +20,8 @@ export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, on
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: 'bottom',
+          display: showLegend,
+          position: 'top',
           labels: {
             font: { family: 'Mulish' },
             color: '#241C16',
@@ -41,7 +42,12 @@ export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, on
       },
     },
   });
-  hiddenIndices.forEach((i) => chart.hide(0, i));
+  // Note: hide(datasetIndex, dataIndex) sets a *different* internal flag than
+  // the one getDataVisibility()/generateLabels() read for a pie/doughnut, so
+  // the legend and the arc's actual visibility fall out of sync. toggleDataVisibility
+  // is the correct per-slice API here, and starts every index visible.
+  hiddenIndices.forEach((i) => chart.toggleDataVisibility(i));
+  chart.update();
   instances.set(canvas, chart);
   return chart;
 }
@@ -73,7 +79,7 @@ export function renderStackedBar(canvas, dayLabels, datasets, hiddenIndices, onT
       },
       plugins: {
         legend: {
-          position: 'bottom',
+          position: 'top',
           labels: {
             font: { family: 'Mulish' },
             color: '#241C16',
