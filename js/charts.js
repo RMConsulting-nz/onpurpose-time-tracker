@@ -6,7 +6,7 @@ import { formatDuration } from './filters.js';
 
 const instances = new Map();
 
-export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, onToggle) {
+export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, onToggle, showLegend = true) {
   const prev = instances.get(canvas);
   if (prev) prev.destroy();
   const chart = new Chart(canvas, {
@@ -20,6 +20,7 @@ export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, on
       maintainAspectRatio: false,
       plugins: {
         legend: {
+          display: showLegend,
           position: 'bottom',
           labels: {
             font: { family: 'Mulish' },
