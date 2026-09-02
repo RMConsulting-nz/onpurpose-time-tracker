@@ -1,6 +1,6 @@
 # Time Tracker | On Purpose
 
-Free, simple software for tracking billable client work and personal time, built by [Rachel Mackay | On Purpose](https://onpurpose.nz).
+Free, simple software for tracking work across multiple priorities, for work or personal time. Designed and directed by [Rachel Mackay | On Purpose](https://onpurpose.nz), and built in collaboration with Claude, Anthropic's AI assistant.
 
 Live app: https://rmconsulting-nz.github.io/onpurpose-time-tracker/
 
