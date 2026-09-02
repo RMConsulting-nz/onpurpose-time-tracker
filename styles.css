@@ -458,6 +458,13 @@ select { flex: 1; min-width: 8rem; }
   margin-bottom: 1rem;
 }
 .settings-auth-status { color: var(--subheading); }
+.settings-note { color: var(--caption); font-size: 0.85rem; margin: -0.25rem 0 0.75rem; }
+.settings-section h3 {
+  font-size: 0.85rem;
+  margin: 1rem 0 0.3rem;
+}
+.settings-section p { margin: 0 0 0.5rem; }
+.settings-section a { color: var(--teal); }
 .sync-error { color: var(--terracotta); font-size: 0.85rem; margin-top: 0.3rem; }
 .settings-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.75rem; }
 .settings-row {
