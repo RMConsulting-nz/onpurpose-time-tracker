@@ -2,12 +2,13 @@
 // and — for week/month — a stacked bar chart per day, stacked by zone or contact.
 import * as state from './state.js';
 import { renderFilterBar, filterEntries, durationHours, getRange, startOfDay, formatDuration } from './filters.js';
-import { renderDoughnut, renderStackedBar } from './charts.js';
+import { renderDoughnut, renderStackedBar, renderHtmlLegend } from './charts.js';
 import { SWATCHES } from './colors.js';
 
 const filterBarEl = document.getElementById('reports-filter-bar');
 const groupToggleEl = document.getElementById('reports-group-toggle');
 const summaryEl = document.getElementById('reports-summary');
+const legendEl = document.getElementById('reports-legend');
 const donutCanvas = document.getElementById('reports-donut');
 const stackedWrap = document.getElementById('reports-stacked-wrap');
 const stackedCanvas = document.getElementById('reports-stacked');
@@ -99,19 +100,25 @@ function render() {
     if (hiddenGroupIds.has(id)) acc.push(i);
     return acc;
   }, []);
-  // The donut is always first in the card, so it's the one that carries the
-  // single shared legend (positioned at its own top — i.e. above everything).
-  // The stacked bar, when present, never shows its own legend.
   const barVisible = filterState.period !== 'day';
 
   if (groupIds.length === 0) {
     donutCanvas.parentElement.classList.add('hidden');
+    legendEl.classList.add('hidden');
   } else {
     donutCanvas.parentElement.classList.remove('hidden');
+    legendEl.classList.remove('hidden');
     const labels = groupIds.map((id) => groupLabel(id === '__none__' ? null : id));
     const values = groupIds.map((id) => totalsByGroup.get(id));
     const colors = groupIds.map((id) => groupColor(id === '__none__' ? null : id));
-    renderDoughnut(donutCanvas, labels, values, colors, hiddenIndices, toggleGroupVisibility, true);
+    renderDoughnut(donutCanvas, labels, values, colors, hiddenIndices);
+    const legendItems = groupIds.map((id, i) => ({
+      label: groupLabel(id === '__none__' ? null : id),
+      color: groupColor(id === '__none__' ? null : id),
+      total: totalsByGroup.get(id),
+      hidden: hiddenGroupIds.has(id),
+    }));
+    renderHtmlLegend(legendEl, legendItems, toggleGroupVisibility);
   }
 
   // Stacked bar: per-day totals, stacked by group (only for week/month)
@@ -140,7 +147,7 @@ function render() {
       data: perGroupPerDay.get(id),
       color: groupColor(id === '__none__' ? null : id),
     }));
-    renderStackedBar(stackedCanvas, dayLabels, datasets, hiddenIndices, toggleGroupVisibility, false);
+    renderStackedBar(stackedCanvas, dayLabels, datasets, hiddenIndices);
   }
 }
 

@@ -1,12 +1,11 @@
 // Thin Chart.js wrapper — destroys and recreates the chart on each render call.
-// Legends show each series' total (formatted as "3h 20m") and, on click, call
-// back into reports.js so it can mirror the hide/show onto the other chart and
-// recompute the visible totals.
+// Both charts share a single HTML legend (see renderHtmlLegend below) instead
+// of Chart.js's own canvas-drawn one, so their built-in legends stay off.
 import { formatDuration } from './filters.js';
 
 const instances = new Map();
 
-export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, onToggle, showLegend = true) {
+export function renderDoughnut(canvas, labels, values, colors, hiddenIndices) {
   const prev = instances.get(canvas);
   if (prev) prev.destroy();
   const chart = new Chart(canvas, {
@@ -19,24 +18,7 @@ export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, on
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: {
-          display: showLegend,
-          position: 'top',
-          labels: {
-            font: { family: 'Mulish' },
-            color: '#241C16',
-            padding: 14,
-            generateLabels: (c) =>
-              c.data.labels.map((label, i) => ({
-                text: `${label} — ${formatDuration(c.data.datasets[0].data[i])}`,
-                fillStyle: c.data.datasets[0].backgroundColor[i],
-                strokeStyle: c.data.datasets[0].backgroundColor[i],
-                hidden: !c.getDataVisibility(i),
-                index: i,
-              })),
-          },
-          onClick: (e, legendItem) => onToggle(legendItem.index),
-        },
+        legend: { display: false },
         tooltip: {
           callbacks: { label: (ctx) => ` ${ctx.label}: ${formatDuration(ctx.parsed)}` },
         },
@@ -44,8 +26,7 @@ export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, on
     },
   });
   // Note: hide(datasetIndex, dataIndex) sets a *different* internal flag than
-  // the one getDataVisibility()/generateLabels() read for a pie/doughnut, so
-  // the legend and the arc's actual visibility fall out of sync. toggleDataVisibility
+  // the one getDataVisibility() reads for a pie/doughnut, so toggleDataVisibility
   // is the correct per-slice API here, and starts every index visible.
   hiddenIndices.forEach((i) => chart.toggleDataVisibility(i));
   chart.update();
@@ -53,7 +34,7 @@ export function renderDoughnut(canvas, labels, values, colors, hiddenIndices, on
   return chart;
 }
 
-export function renderStackedBar(canvas, dayLabels, datasets, hiddenIndices, onToggle, showLegend = true) {
+export function renderStackedBar(canvas, dayLabels, datasets, hiddenIndices) {
   const prev = instances.get(canvas);
   if (prev) prev.destroy();
   const chart = new Chart(canvas, {
@@ -79,23 +60,7 @@ export function renderStackedBar(canvas, dayLabels, datasets, hiddenIndices, onT
         },
       },
       plugins: {
-        legend: {
-          display: showLegend,
-          position: 'top',
-          labels: {
-            font: { family: 'Mulish' },
-            color: '#241C16',
-            generateLabels: (c) =>
-              c.data.datasets.map((ds, i) => ({
-                text: `${ds.label} — ${formatDuration(ds.data.reduce((a, b) => a + b, 0))}`,
-                fillStyle: ds.backgroundColor,
-                strokeStyle: ds.backgroundColor,
-                hidden: !c.isDatasetVisible(i),
-                datasetIndex: i,
-              })),
-          },
-          onClick: (e, legendItem) => onToggle(legendItem.datasetIndex),
-        },
+        legend: { display: false },
         tooltip: {
           callbacks: { label: (ctx) => `${ctx.dataset.label}: ${formatDuration(ctx.parsed.y)}` },
         },
@@ -106,4 +71,28 @@ export function renderStackedBar(canvas, dayLabels, datasets, hiddenIndices, onT
   chart.update();
   instances.set(canvas, chart);
   return chart;
+}
+
+// Renders a single HTML legend shared by both charts. `items` is
+// [{ label, color, total, hidden }], in the same order/index as the charts'
+// groups, so onToggle(index) maps straight back to toggleGroupVisibility.
+export function renderHtmlLegend(container, items, onToggle) {
+  container.innerHTML = '';
+  items.forEach((item, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chart-legend-item' + (item.hidden ? ' chart-legend-item-hidden' : '');
+
+    const swatch = document.createElement('span');
+    swatch.className = 'chart-legend-swatch';
+    swatch.style.background = item.color;
+
+    const label = document.createElement('span');
+    label.className = 'chart-legend-label';
+    label.textContent = `${item.label} — ${formatDuration(item.total)}`;
+
+    btn.append(swatch, label);
+    btn.addEventListener('click', () => onToggle(i));
+    container.appendChild(btn);
+  });
 }
