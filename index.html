@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-<title>RMC Time Tracker</title>
+<title>Time Tracker — On Purpose</title>
 <meta name="theme-color" content="#C4472C">
-<meta name="description" content="Time tracking for R Mackay Consulting — billable client work and personal time, synced to OneDrive.">
+<meta name="description" content="Time tracking by Rachel Mackay | On Purpose — billable client work and personal time, synced to your own OneDrive.">
 
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="RMC Time">
+<meta name="apple-mobile-web-app-title" content="On Purpose">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,6 +74,7 @@
 
     <div class="settings-section">
       <h2>Zones</h2>
+      <p class="settings-note">Zones are your time-tracking categories — one per client, project, or type of work. Each gets its own timer, colour, and total in Reports.</p>
       <div id="settings-zones-list" class="settings-list"></div>
       <form id="zone-add-form" class="settings-add-form">
         <input type="text" name="name" placeholder="New zone name" required>
@@ -88,6 +89,22 @@
         <input type="text" name="name" placeholder="New contact name" required>
         <button type="submit" class="btn btn-primary btn-small">Add contact</button>
       </form>
+    </div>
+
+    <div class="settings-section">
+      <h2>About this app</h2>
+      <p>Time Tracker — On Purpose is a free, open-source app for tracking billable client work and personal time. It's dependency-light and hosted on GitHub Pages, with no company server involved.</p>
+
+      <h3>Your data &amp; privacy</h3>
+      <p class="muted">Everything you enter is stored only on this device until you sign in with Microsoft, above. Once signed in, it's saved to a private app folder in your own OneDrive — nobody else, including Rachel, can see or access it. If you never sign in, your data stays local to this device and browser only, and is gone if you clear your browser data.</p>
+
+      <h3>Open source</h3>
+      <p class="muted">The code is free for anyone to view, use, or build their own copy from, under the MIT license. <a href="https://github.com/RMConsulting-nz/rmc-time-tracker" target="_blank" rel="noopener">View it on GitHub</a>.</p>
+
+      <h3>Contact</h3>
+      <p class="muted">Built by Rachel Mackay | On Purpose<br>
+        <a href="https://onpurpose.nz" target="_blank" rel="noopener">onpurpose.nz</a> · <a href="mailto:rachel@onpurpose.nz">rachel@onpurpose.nz</a>
+      </p>
     </div>
   </section>
 

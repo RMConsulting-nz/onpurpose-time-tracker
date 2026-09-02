@@ -1,7 +1,7 @@
 {
-  "name": "RMC Time Tracker",
-  "short_name": "RMC Time",
-  "description": "Time tracking for R Mackay Consulting — billable client work and personal time, synced to OneDrive.",
+  "name": "Time Tracker — On Purpose",
+  "short_name": "On Purpose",
+  "description": "Time tracking by Rachel Mackay | On Purpose — billable client work and personal time, synced to your own OneDrive.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
