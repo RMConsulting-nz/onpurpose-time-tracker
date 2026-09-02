@@ -407,7 +407,35 @@ select { flex: 1; min-width: 8rem; }
   margin-bottom: 1rem;
 }
 .chart-wrap { position: relative; height: 260px; }
-.donut-wrap { height: 340px; }
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem 0.3rem 0.4rem;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.chart-legend-item-hidden {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+.chart-legend-swatch {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
 #reports-stacked-wrap {
   margin-top: 1.25rem;
   padding-top: 1.25rem;
