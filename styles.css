@@ -457,6 +457,24 @@ select { flex: 1; min-width: 8rem; }
   padding: 1rem;
   margin-bottom: 1rem;
 }
+.settings-callout {
+  background: #FBE6D9;
+  border: 1px solid var(--terracotta);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+}
+.settings-callout-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--terracotta-dark);
+  margin: 0 0 0.25rem;
+}
+.settings-callout-text {
+  color: var(--subheading);
+  font-size: 0.85rem;
+  margin: 0;
+}
 .settings-auth-status { color: var(--subheading); }
 .settings-note { color: var(--caption); font-size: 0.85rem; margin: -0.25rem 0 0.75rem; }
 .settings-section h3 {
