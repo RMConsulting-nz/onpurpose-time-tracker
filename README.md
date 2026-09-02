@@ -24,7 +24,7 @@ Nothing here goes through a server run by Rachel or anyone else. It either stays
 
 ## This app is free to reuse
 
-Time Tracker | On Purpose is open source under the [MIT licence](LICENSE). Anyone can take the code and build their own version from it, even with different branding, free of charge. The only condition is that they keep the original copyright notice inside the code itself; they don't have to credit Rachel anywhere in their own app. If you'd like to make your own copy, with your own branding, your own OneDrive, and your own hosting, see [BUILD_YOUR_OWN.md](BUILD_YOUR_OWN.md). It includes a ready-to-use prompt for Claude, and is upfront about the setup that takes.
+Time Tracker | On Purpose is open source under the [MIT licence](LICENSE). Anyone can take the code and build their own version from it, even with different branding, free of charge. The only condition is that they keep the original copyright notice inside the code itself; they don't have to credit Rachel anywhere in their own app. If you'd like to make your own copy, with your own branding, your own OneDrive, and your own hosting, see [BUILD_YOUR_OWN.md](BUILD_YOUR_OWN.md). It includes a ready-to-use prompt for an AI assistant, Claude, ChatGPT, or another one, and is upfront about the setup that takes.
 
 Anyone setting this repo up for themselves, or forking it, should also read [SETUP.md](SETUP.md) for the one-time Azure AD and GitHub Pages steps.
 
