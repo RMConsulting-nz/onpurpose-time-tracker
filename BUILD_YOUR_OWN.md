@@ -25,7 +25,7 @@ Copy the text below, paste it to Claude (claude.ai, the Claude Code CLI, or Clau
 ```
 I want to build my own copy of a time-tracking web app, based on an existing
 open-source project. The original is at:
-https://github.com/RMConsulting-nz/rmc-time-tracker
+https://github.com/RMConsulting-nz/onpurpose-time-tracker
 
 Please:
 1. Read through that repo's files (index.html, styles.css, the js/ folder,

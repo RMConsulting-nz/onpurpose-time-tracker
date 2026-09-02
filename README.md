@@ -2,7 +2,7 @@
 
 Free, simple software for tracking billable client work and personal time, built by [Rachel Mackay | On Purpose](https://onpurpose.nz).
 
-Live app: https://rmconsulting-nz.github.io/rmc-time-tracker/
+Live app: https://rmconsulting-nz.github.io/onpurpose-time-tracker/
 
 ## Track work across multiple priorities, for work or personal time
 
