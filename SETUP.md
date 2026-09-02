@@ -60,23 +60,30 @@ pre-seeded with three zones and two contacts.
 
 ## Known limitation: personal/family Microsoft accounts
 
-This app only reliably works with **work/school (Microsoft 365 organization)
-accounts**. Personal and Family Microsoft accounts fail to sync with a
-`serviceReadOnly` / "Database Is Read Only" error from Microsoft Graph — this
-was confirmed across two separate personal accounts, so it's not specific to
-any one account.
+This app is designed for **work/school (Microsoft 365 organization)
+accounts**. Personal and Family Microsoft accounts have sometimes failed to
+sync, with a `serviceReadOnly` / "Database Is Read Only" error from Microsoft
+Graph, on the very first sign-in.
 
-The cause: OneDrive for work/school accounts runs on SharePoint's
+The likely cause: OneDrive for work/school accounts runs on SharePoint's
 infrastructure, while OneDrive Personal/Family runs on an older, separate
 consumer backend. The feature this app relies on to create its own sandboxed
-data folder (`Files.ReadWrite.AppFolder`'s automatic "AppFolder" creation) is
-known to be considerably less reliable on that consumer backend. Manually
-creating folders/files in the regular OneDrive web app works fine on personal
-accounts — it's specifically Graph's automatic AppFolder creation that fails.
+data folder (`Files.ReadWrite.AppFolder`'s automatic "AppFolder" creation)
+appears to provision that folder asynchronously on that consumer backend, so
+the very first attempt can hit a "not ready yet" error even though the folder
+is being created behind the scenes. Manually creating folders/files in the
+regular OneDrive web app works fine on personal accounts, it's specifically
+Graph's automatic AppFolder creation that's affected.
 
-A fix is possible but requires broadening the requested permission from
-`Files.ReadWrite.AppFolder` (sandboxed to this app's own folder) to
-`Files.ReadWrite` (full access to the OneDrive), and having the app manage a
-plain, ordinary folder itself instead of relying on the AppFolder trick. That
-trade-off (broader access) hasn't been made — for now, use a work/school
-account.
+In at least one case, signing out and back in again shortly after the first
+failure resolved it: the app folder had already been created, so the second
+attempt succeeded normally and has kept syncing since. This isn't yet
+confirmed as a reliable fix rather than a one-off, so if you're on a personal
+account and hit this error, it's worth trying again before assuming it won't
+work. A work/school account remains what's known to work without this hiccup.
+
+A more thorough fix is possible but requires broadening the requested
+permission from `Files.ReadWrite.AppFolder` (sandboxed to this app's own
+folder) to `Files.ReadWrite` (full access to the OneDrive), and having the
+app manage a plain, ordinary folder itself instead of relying on the
+AppFolder trick. That trade-off (broader access) hasn't been made.
