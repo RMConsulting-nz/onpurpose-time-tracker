@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-<title>Time Tracker — On Purpose</title>
+<title>Time Tracker | On Purpose</title>
 <meta name="theme-color" content="#C4472C">
-<meta name="description" content="Time tracking by Rachel Mackay | On Purpose — billable client work and personal time, synced to your own OneDrive.">
+<meta name="description" content="Time tracking by Rachel Mackay | On Purpose, for work across multiple priorities or personal time, synced to your own OneDrive.">
 
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
@@ -50,7 +50,7 @@
     <div id="reports-filter-bar"></div>
     <div class="report-group-toggle" id="reports-group-toggle">
       <button type="button" class="active" data-group="zone">By zone</button>
-      <button type="button" data-group="contact">By contact</button>
+      <button type="button" data-group="contact">By tag</button>
     </div>
     <div id="reports-summary" class="report-totals"></div>
     <div class="chart-card">
@@ -74,7 +74,7 @@
 
     <div class="settings-section">
       <h2>Zones</h2>
-      <p class="settings-note">Zones are your time-tracking categories — one per client, project, or type of work. Each gets its own timer, colour, and total in Reports.</p>
+      <p class="settings-note">Zones are your time-tracking categories — one per project, or type of work. Each gets its own timer, colour, and total in Reports.</p>
       <div id="settings-zones-list" class="settings-list"></div>
       <form id="zone-add-form" class="settings-add-form">
         <input type="text" name="name" placeholder="New zone name" required>
@@ -83,26 +83,30 @@
     </div>
 
     <div class="settings-section">
-      <h2>Contacts</h2>
+      <h2>Tags</h2>
+      <p class="settings-note">Tags are an extra layer of detail you can add to your time tracking log (for example, client initials, staff names, or project names).</p>
       <div id="settings-contacts-list" class="settings-list"></div>
       <form id="contact-add-form" class="settings-add-form">
-        <input type="text" name="name" placeholder="New contact name" required>
-        <button type="submit" class="btn btn-primary btn-small">Add contact</button>
+        <input type="text" name="name" placeholder="New tag name" required>
+        <button type="submit" class="btn btn-primary btn-small">Add tag</button>
       </form>
     </div>
 
     <div class="settings-section">
       <h2>About this app</h2>
-      <p>Time Tracker — On Purpose is a free, open-source app for tracking billable client work and personal time. It's dependency-light and hosted on GitHub Pages, with no company server involved.</p>
+      <p>Time Tracker | On Purpose is a free, open-source app for tracking work across multiple priorities, for work or personal time. There's no company server behind it. Your device talks directly to Microsoft on your own behalf, so nobody sits in between you and your own data.</p>
 
-      <h3>Your data &amp; privacy</h3>
-      <p class="muted">Everything you enter is stored only on this device until you sign in with Microsoft, above. Once signed in, it's saved to a private app folder in your own OneDrive — nobody else, including Rachel, can see or access it. If you never sign in, your data stays local to this device and browser only, and is gone if you clear your browser data.</p>
+      <h3>Your data stays private</h3>
+      <p class="muted">Everything you enter is stored only on this device until you sign in with a Microsoft work account, above. Once you sign in, it's saved to a private app folder in your own OneDrive, and nobody else, including Rachel, can see or access it. If you never sign in, your data stays local to this device and browser only, and it's gone if you clear your browser data.</p>
 
-      <h3>Open source</h3>
-      <p class="muted">The code is free for anyone to view, use, or build their own copy from, under the MIT license. <a href="https://github.com/RMConsulting-nz/rmc-time-tracker" target="_blank" rel="noopener">View it on GitHub</a>.</p>
+      <h3>Add it to your home screen</h3>
+      <p class="muted">On your phone, open this page in your browser and add it to your home screen (iPhone: tap Share, then Add to Home Screen. Android: open the browser menu, then Add to Home Screen or Install app). On a computer, most browsers let you install it from the address bar, or you can just save the page to your favourites.</p>
 
-      <h3>Contact</h3>
-      <p class="muted">Built by Rachel Mackay | On Purpose<br>
+      <h3>This app is free to reuse</h3>
+      <p class="muted">The code is open source under the MIT licence, so anyone can view it, use it, or build their own copy from it. <a href="https://github.com/RMConsulting-nz/rmc-time-tracker" target="_blank" rel="noopener">View it on GitHub</a>.</p>
+
+      <h3>Get in touch with Rachel</h3>
+      <p class="muted">Rachel Mackay | On Purpose<br>
         <a href="https://onpurpose.nz" target="_blank" rel="noopener">onpurpose.nz</a> · <a href="mailto:rachel@onpurpose.nz">rachel@onpurpose.nz</a>
       </p>
     </div>
