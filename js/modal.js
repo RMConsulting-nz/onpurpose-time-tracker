@@ -27,13 +27,13 @@ function zoneOptions(selectedId) {
 }
 function contactOptions(selectedId) {
   const contacts = state.allContacts().filter((c) => !c.archived || c.id === selectedId);
-  const opts = ['<option value="">No contact</option>']
+  const opts = ['<option value="">No tag</option>']
     .concat(
       contacts.map(
         (c) => `<option value="${c.id}" ${c.id === selectedId ? 'selected' : ''}>${escapeHtml(c.name)}${c.archived ? ' (archived)' : ''}</option>`
       )
     )
-    .concat(['<option value="__new__">+ Add new contact…</option>'])
+    .concat(['<option value="__new__">+ Add new tag…</option>'])
     .join('');
   return opts;
 }
@@ -77,7 +77,7 @@ function render(mode, opts) {
             </label>`
           : `<input type="hidden" name="zoneId" value="${zoneId || ''}">`
       }
-      <label class="field">Contact
+      <label class="field">Tag
         <select name="contactId">${contactOptions(opts.contactId)}</select>
       </label>
       <label class="field field-checkbox">
@@ -130,7 +130,7 @@ function render(mode, opts) {
       lastContactValue = contactSelect.value;
       return;
     }
-    const name = (prompt('New contact name:') || '').trim();
+    const name = (prompt('New tag name:') || '').trim();
     if (!name) {
       contactSelect.value = lastContactValue;
       return;

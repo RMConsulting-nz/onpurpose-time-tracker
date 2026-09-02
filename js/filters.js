@@ -123,7 +123,7 @@ export function renderFilterBar(container, filterState, onChange) {
           ${zones.map((z) => `<option value="${z.id}" ${filterState.zoneId === z.id ? 'selected' : ''}>${escapeHtml(z.name)}${z.archived ? ' (archived)' : ''}</option>`).join('')}
         </select>
         <select data-filter="contactId">
-          <option value="all">All contacts</option>
+          <option value="all">All tags</option>
           ${contacts.map((c) => `<option value="${c.id}" ${filterState.contactId === c.id ? 'selected' : ''}>${escapeHtml(c.name)}${c.archived ? ' (archived)' : ''}</option>`).join('')}
         </select>
         <select data-filter="billable">

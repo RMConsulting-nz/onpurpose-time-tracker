@@ -51,7 +51,7 @@ function groupLabel(id) {
     return z ? z.name : 'Unknown zone';
   }
   const c = state.getContact(id);
-  return c ? c.name : 'No contact';
+  return c ? c.name : 'No tag';
 }
 
 function groupColor(id) {

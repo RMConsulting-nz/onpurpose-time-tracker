@@ -1,7 +1,7 @@
 {
-  "name": "Time Tracker — On Purpose",
+  "name": "Time Tracker | On Purpose",
   "short_name": "On Purpose",
-  "description": "Time tracking by Rachel Mackay | On Purpose — billable client work and personal time, synced to your own OneDrive.",
+  "description": "Time tracking by Rachel Mackay | On Purpose, for work across multiple priorities or personal time, synced to your own OneDrive.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

@@ -86,7 +86,7 @@ function renderContacts() {
   contactsListEl.querySelectorAll('.settings-row').forEach((row) => {
     const id = row.dataset.contactId;
     row.querySelector('[data-field="name"]').addEventListener('change', (e) => {
-      state.updateContact(id, { name: e.target.value.trim() || 'Untitled contact' });
+      state.updateContact(id, { name: e.target.value.trim() || 'Untitled tag' });
     });
     row.querySelector('[data-action="archive"]').addEventListener('click', () => {
       const contact = state.getContact(id);

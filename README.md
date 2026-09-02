@@ -1,60 +1,35 @@
-# Time Tracker — On Purpose
+# Time Tracker | On Purpose
 
-A free, simple app for tracking billable client work and personal time — built
-by [Rachel Mackay | On Purpose](https://onpurpose.nz).
+Free, simple software for tracking billable client work and personal time, built by [Rachel Mackay | On Purpose](https://onpurpose.nz).
 
-**Live app:** https://rmconsulting-nz.github.io/rmc-time-tracker/
+Live app: https://rmconsulting-nz.github.io/rmc-time-tracker/
 
-## What it does
+## Track work across multiple priorities, for work or personal time
 
-- Start/pause/resume/stop timers for as many **zones** (your categories — one
-  per client, project, or type of work) as you like.
-- Mark time as billable or not, attach it to a contact, add manual entries.
-- Filter and review everything in **Logs**, and see totals and breakdowns by
-  day/week/month in **Reports** (donut + daily bar chart, both driven by one
-  shared legend you can click to hide/show a zone or contact).
-- Works as an installable app (PWA) on your phone or desktop — no app store.
+Start, pause, resume and stop timers for as many zones (your categories, one per project or type of work) as you like. Mark time as billable or not, add a tag for extra detail such as a client's initials or a staff name, or add an entry by hand afterwards. Review and filter everything in Logs, and see totals and breakdowns by day, week or month in Reports, with one shared legend across the donut and daily bar charts that you can click to show or hide a zone or tag.
 
-## Signing in with Microsoft
+It works as an installable app on your phone or computer, not just a page you visit. On a phone, open the link in your browser and add it to your home screen (iPhone: tap Share, then Add to Home Screen. Android: open the browser menu, then Add to Home Screen or Install app). On a computer, most browsers let you install it straight from the address bar, or you can save it to your favourites instead.
 
-The app works two ways:
+## This app was designed for Microsoft 365 work accounts
 
-- **Not signed in:** everything is stored only in your browser on that one
-  device (`localStorage`). It's real, working local storage — not a demo —
-  but it only lives on that device/browser, and disappears if you clear your
-  browser's site data (or if you're in a private/incognito window, once that
-  window's whole private session ends). This is a genuinely good way to try
-  the app out with throwaway data before committing to it.
-- **Signed in with a Microsoft account:** your data is also saved to a private
-  app folder in your own OneDrive, which is what makes it sync across your
-  devices. **This is the only way to get syncing** — the app doesn't have any
-  server of its own, so without a Microsoft sign-in there's nothing to sync
-  through.
-  - Personal/family Microsoft accounts currently have a platform-level bug
-    that breaks this sync (see [SETUP.md](SETUP.md) for details) — a
-    work/school (Microsoft 365) account is what's known to work reliably.
+Without signing in, everything is stored only in your browser on that one device (`localStorage`). It's real, working storage, not a demo, but it only lives on that device and browser. It disappears if you clear your browser's site data, or if you're in a private or incognito window once that window's whole private session ends. That makes it a genuinely good way to try the app out with throwaway data before committing to it.
 
-## Your data & privacy
+Signing in with a Microsoft work account also saves your data to a private app folder in your own OneDrive, which is what lets it sync across your devices. This is the only way to get syncing, since the app has no server of its own to sync through. Depending on how your organisation manages Microsoft 365, your IT admin may need to approve the app the first time anyone in it signs in.
 
-Nothing here ever passes through a server run by Rachel or anyone else. It's
-either purely local to your device, or — once you sign in — synced directly
-between your device and your own OneDrive via Microsoft's own Graph API. The
-app only ever requests access to its own small, sandboxed folder in your
-OneDrive, not your whole drive.
+Personal and family Microsoft accounts currently hit a platform-level bug that breaks this syncing. See [SETUP.md](SETUP.md) for the detail. A work or school account is what's known to work reliably.
 
-## Open source
+## Your data never passes through a company server
 
-This project is open source under the [MIT license](LICENSE) — free to use,
-copy, or build your own copy from. If you'd like to make your own version
-(your own branding, your own OneDrive, your own hosting), see
-[BUILD_YOUR_OWN.md](BUILD_YOUR_OWN.md) — it includes a ready-to-use prompt for
-Claude plus what to expect from the setup.
+Nothing here goes through a server run by Rachel or anyone else. It either stays local to your device, or, once you sign in, syncs directly between your device and your own OneDrive through Microsoft's own systems. The app only ever asks for access to its own small, sandboxed folder in your OneDrive, not your whole drive.
 
-Contributors setting this repo up for themselves (or forking it) should also
-read [SETUP.md](SETUP.md) for the one-time Azure AD + GitHub Pages steps.
+## This app is free to reuse
 
-## Contact
+Time Tracker | On Purpose is open source under the [MIT licence](LICENSE), free to use, copy, or build your own version from. If you'd like to make your own copy, with your own branding, your own OneDrive, and your own hosting, see [BUILD_YOUR_OWN.md](BUILD_YOUR_OWN.md). It includes a ready-to-use prompt for Claude, and is upfront about the setup that takes.
 
-**Rachel Mackay | On Purpose**
-🌐 [onpurpose.nz](https://onpurpose.nz)
-✉️ [rachel@onpurpose.nz](mailto:rachel@onpurpose.nz)
+Anyone setting this repo up for themselves, or forking it, should also read [SETUP.md](SETUP.md) for the one-time Azure AD and GitHub Pages steps.
+
+## Get in touch with Rachel
+
+Rachel Mackay | On Purpose
+[onpurpose.nz](https://onpurpose.nz)
+[rachel@onpurpose.nz](mailto:rachel@onpurpose.nz)
