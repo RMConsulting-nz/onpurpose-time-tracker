@@ -18,6 +18,33 @@ Signing in with a Microsoft work account also saves your data to a private app f
 
 Personal and family Microsoft accounts currently hit a platform-level bug that breaks this syncing. See [SETUP.md](SETUP.md) for the detail. A work or school account is what's known to work reliably.
 
+## Send this to your IT admin if they need to approve it
+
+Most organisations only let an admin, not an individual, approve a new Microsoft sign-in app like this one, since it hasn't gone through Microsoft's formal publisher verification process (a separate, lengthy certification most small or free tools don't have). If you're asked for admin approval when you try to sign in, here's a message you can copy and send them:
+
+```
+Hi,
+
+I'd like to use a small time-tracking app that signs in with Microsoft to
+save data to my own OneDrive. Could you approve it for my account, or for
+our organisation?
+
+App name: Time Tracker | On Purpose
+Application (client) ID: 50750594-6c26-4fb2-a356-7c436dfe8e8b
+Permission requested: Files.ReadWrite.AppFolder (access to a single
+sandboxed folder in my own OneDrive only, not the rest of my files)
+Source code: https://github.com/RMConsulting-nz/onpurpose-time-tracker
+(open source, MIT licence, so you're welcome to review it)
+
+It isn't a Microsoft-verified publisher, which is why it needs your
+approval rather than mine. You should be able to review or grant this
+from the Microsoft Entra admin centre, under Enterprise applications, or
+by ticking "Consent on behalf of your organization" if that option
+appears when I try to sign in.
+
+Thanks
+```
+
 ## Your data never passes through a company server
 
 Nothing here goes through a server run by Rachel or anyone else. It either stays local to your device, or, once you sign in, syncs directly between your device and your own OneDrive through Microsoft's own systems. The app only ever asks for access to its own small, sandboxed folder in your OneDrive, not your whole drive.
