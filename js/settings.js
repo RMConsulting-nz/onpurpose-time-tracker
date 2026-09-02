@@ -7,6 +7,7 @@ import { SWATCHES } from './colors.js';
 const authStatusEl = document.getElementById('settings-auth-status');
 const signInBtn = document.getElementById('settings-signin-btn');
 const signOutBtn = document.getElementById('settings-signout-btn');
+const signinCalloutEl = document.getElementById('settings-signin-callout');
 const zonesListEl = document.getElementById('settings-zones-list');
 const zoneAddForm = document.getElementById('zone-add-form');
 const contactsListEl = document.getElementById('settings-contacts-list');
@@ -26,16 +27,22 @@ function swatchGridHtml(name, selectedHex) {
     </div>`;
 }
 
+// A plain-language stand-in for whatever MSAL/Graph actually threw, since that
+// raw error text (a popup-blocked message, an HTTP status, etc.) means nothing
+// to someone who isn't following the code.
+const SYNC_ERROR_MESSAGE = "Your changes are saved on this device, but the sync to OneDrive didn't go through. This usually clears up next time you use the app. If it keeps happening, try signing out and back in.";
+
 function renderAuth() {
   const account = graph.getAccount();
   const syncing = state.isSyncing();
   const err = state.getLastSyncError();
+  signinCalloutEl.classList.toggle('hidden', !!account);
   if (account) {
-    authStatusEl.innerHTML = `Signed in as <strong>${escapeHtml(account.username)}</strong>${syncing ? ' &middot; syncing…' : ''}${err ? `<div class="sync-error">Sync issue: ${escapeHtml(err)}</div>` : ''}`;
+    authStatusEl.innerHTML = `Signed in as <strong>${escapeHtml(account.username)}</strong>${syncing ? ' &middot; syncing…' : ''}${err ? `<div class="sync-error">${SYNC_ERROR_MESSAGE}</div>` : ''}`;
     signInBtn.classList.add('hidden');
     signOutBtn.classList.remove('hidden');
   } else {
-    authStatusEl.textContent = 'Not signed in — data is only stored on this device.';
+    authStatusEl.textContent = 'Not signed in, data is only stored on this device.';
     signInBtn.classList.remove('hidden');
     signOutBtn.classList.add('hidden');
   }

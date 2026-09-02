@@ -33,3 +33,5 @@ Anyone setting this repo up for themselves, or forking it, should also read [SET
 Rachel Mackay | On Purpose
 [onpurpose.nz](https://onpurpose.nz)
 [rachel@onpurpose.nz](mailto:rachel@onpurpose.nz)
+
+If you've found this useful, or built your own copy, Rachel would love to hear about it.
