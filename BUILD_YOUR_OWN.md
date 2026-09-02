@@ -16,11 +16,11 @@ This is free, via [portal.azure.com](https://portal.azure.com), and is what lets
 
 If you plan to sign in with a work or school account, your IT admin may need to approve, or consent to, the app the first time anyone in your organisation signs in. This is the same as any new sign-in-with-Microsoft app. Personal Microsoft accounts don't need admin approval, but currently have a separate syncing bug of their own, also covered in SETUP.md. A work or school account is what's known to work.
 
-None of this is difficult, but it is real setup, not a copy-paste. The good news is that Claude, or another AI assistant, can walk you through every step above, one at a time, on your own accounts.
+None of this is difficult, but it is real setup, not a copy-paste. The good news is that an AI assistant, Claude, ChatGPT, or another one, can walk you through every step above, one at a time, on your own accounts.
 
 ## The prompt
 
-Copy the text below, paste it to Claude (claude.ai, the Claude Code CLI, or Claude in your IDE), and follow along.
+Copy the text below and paste it to whichever AI assistant you use, then follow along. Nothing in it is specific to one assistant, though how much it can do on its own varies: some can fetch the repo and create files and commits directly, others may need you to copy files across yourself as you go. Either way, it should be able to explain each step.
 
 ```
 I want to build my own copy of a time-tracking web app, based on an existing
@@ -52,4 +52,4 @@ registration or GitHub Pages before, so please explain each step rather than
 assuming I know the terminology.
 ```
 
-That's enough context for Claude to fetch the repo, explain what it's looking at, and guide you through the rest interactively.
+That's enough context for an AI assistant to fetch the repo, explain what it's looking at, and guide you through the rest interactively.
