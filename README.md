@@ -62,3 +62,5 @@ Rachel Mackay | On Purpose
 [rachel@onpurpose.nz](mailto:rachel@onpurpose.nz)
 
 If you've found this useful, or built your own copy, Rachel would love to hear about it.
+
+If you'd like your own custom app built, or coaching to build your own with AI, get in touch.

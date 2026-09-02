@@ -483,6 +483,7 @@ select { flex: 1; min-width: 8rem; }
 }
 .settings-section p { margin: 0 0 0.5rem; }
 .settings-section a { color: var(--teal); }
+.settings-cta { margin-top: 1rem; }
 .sync-error { color: var(--terracotta); font-size: 0.85rem; margin-top: 0.3rem; }
 .settings-list { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 0.75rem; }
 .settings-row {
