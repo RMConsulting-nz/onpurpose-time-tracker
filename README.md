@@ -6,7 +6,7 @@ Live app: https://rmconsulting-nz.github.io/rmc-time-tracker/
 
 ## Track work across multiple priorities, for work or personal time
 
-Start, pause, resume and stop timers for as many zones (your categories, one per project or type of work) as you like. Mark time as billable or not, add a tag for extra detail such as a client's initials or a staff name, or add an entry by hand afterwards. Review and filter everything in Logs, and see totals and breakdowns by day, week or month in Reports, with one shared legend across the donut and daily bar charts that you can click to show or hide a zone or tag.
+Start, pause, resume and stop timers for as many zones (your categories, one per project or type of work) as you like. Mark time as billable or not, add a reference for extra detail such as a client's initials or a staff name, or add an entry by hand afterwards. Review and filter everything in Logs, and see totals and breakdowns by day, week or month in Reports, with one shared legend across the donut and daily bar charts that you can click to show or hide a zone or reference.
 
 It works as an installable app on your phone or computer, not just a page you visit. On a phone, open the link in your browser and add it to your home screen (iPhone: tap Share, then Add to Home Screen. Android: open the browser menu, then Add to Home Screen or Install app). On a computer, most browsers let you install it straight from the address bar, or you can save it to your favourites instead.
 
