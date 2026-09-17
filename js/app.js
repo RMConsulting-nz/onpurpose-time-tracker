@@ -26,7 +26,12 @@ async function boot() {
   } catch (err) {
     console.error('Auth init failed', err);
   }
-  await state.init();
+
+  // Render from whatever's already on this device first, so the app is up
+  // and usable straight away. The OneDrive sync (a network round trip that
+  // only grows as your history does) happens afterwards, in the background,
+  // and the UI just updates in place if it brings back anything new.
+  state.loadLocal();
 
   timer.init();
   logs.init();
@@ -38,6 +43,10 @@ async function boot() {
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js').catch((err) => console.warn('Service worker registration failed', err));
+  }
+
+  if (graph.isSignedIn()) {
+    state.syncFromRemote();
   }
 }
 
