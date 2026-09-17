@@ -96,13 +96,13 @@ function mergeData(remote, local) {
   };
 }
 
-export async function init() {
+// Loads whatever's already on this device and renders it immediately, so the
+// app is usable straight away instead of waiting on a OneDrive round trip.
+// Call syncFromRemote() separately, in the background, once the UI is up.
+export function loadLocal() {
   loadFromLocalStorage();
   data.runningTimer = runningTimer;
   emit();
-  if (graph.isSignedIn()) {
-    await syncFromRemote();
-  }
 }
 
 export async function syncFromRemote() {
